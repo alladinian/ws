@@ -67,7 +67,7 @@ open class WSRequest {
         return request ?? r
     }
 
-    func wsSessionManager() -> SessionManager {
+    open func wsSessionManager() -> SessionManager {
         let sessionManager = Alamofire.SessionManager.default
         if let adapter = requestAdapter {
             sessionManager.adapter = adapter
