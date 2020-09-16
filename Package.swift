@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "ws",
-    platforms: [.iOS(.v8)],
+    platforms: [.iOS(.v9)],
     products: [.library(name: "ws", targets: ["ws"])],
     dependencies: [
         .package(url: "https://github.com/freshOS/Arrow", .exact("5.1.2")),
