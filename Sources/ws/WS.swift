@@ -24,8 +24,10 @@ open class WS {
     // Same but for ArrowInitializable objects
     open var defaultObjectParsingKeyPath: String?
 
+    /*
     @available(*, unavailable, renamed:"defaultCollectionParsingKeyPath")
     open var jsonParsingColletionKey: String?
+     */
     
     /**
         Prints network calls to the console. 
