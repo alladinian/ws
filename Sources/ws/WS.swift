@@ -67,8 +67,18 @@ open class WS {
     
     // MARK: - Calls
     
-    internal func call(_ url: String, verb: WSHTTPVerb = .get, params: Params = Params()) -> WSRequest {
+    internal func call(
+        _ url: String,
+        verb: WSHTTPVerb = .get,
+        params: Params = Params(),
+        extraHeaders: [String : String]? = nil
+    ) -> WSRequest {
         let c = defaultCall()
+        if let extraHeaders {
+            for (key, value) in extraHeaders {
+                c.headers[key] = value
+            }
+        }
         c.httpVerb = verb
         c.URL = url
         if mandatoryQueryParams.isEmpty {
@@ -95,44 +105,44 @@ open class WS {
     
     // MARK: JSON calls
     
-    open func get(_ url: String, params: Params = Params()) -> Promise<JSON> {
-        return getRequest(url, params: params).fetch().resolveOnMainThread()
+    open func get(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<JSON> {
+        return getRequest(url, params: params, extraHeaders: extraHeaders).fetch().resolveOnMainThread()
     }
     
-    open func post(_ url: String, params: Params = Params()) -> Promise<JSON> {
-        return postRequest(url, params: params).fetch().resolveOnMainThread()
+    open func post(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<JSON> {
+        return postRequest(url, params: params, extraHeaders: extraHeaders).fetch().resolveOnMainThread()
     }
     
-    open func put(_ url: String, params: Params = Params()) -> Promise<JSON> {
-        return putRequest(url, params: params).fetch().resolveOnMainThread()
+    open func put(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<JSON> {
+        return putRequest(url, params: params, extraHeaders: extraHeaders).fetch().resolveOnMainThread()
     }
     
-    open func delete(_ url: String, params: Params = Params()) -> Promise<JSON> {
-        return deleteRequest(url, params: params).fetch().resolveOnMainThread()
+    open func delete(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<JSON> {
+        return deleteRequest(url, params: params, extraHeaders: extraHeaders).fetch().resolveOnMainThread()
     }
     
     // MARK: Void calls
     
-    open func get(_ url: String, params: Params = Params()) -> Promise<Void> {
-        let r = getRequest(url, params: params)
+    open func get(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<Void> {
+        let r = getRequest(url, params: params, extraHeaders: extraHeaders)
         r.returnsJSON = false
         return r.fetch().registerThen { (_: JSON) -> Void in }.resolveOnMainThread()
     }
     
-    open func post(_ url: String, params: Params = Params()) -> Promise<Void> {
-        let r = postRequest(url, params: params)
+    open func post(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<Void> {
+        let r = postRequest(url, params: params, extraHeaders: extraHeaders)
         r.returnsJSON = false
         return r.fetch().registerThen { (_:JSON) -> Void in }.resolveOnMainThread()
     }
     
-    open func put(_ url: String, params: Params = Params()) -> Promise<Void> {
-        let r = putRequest(url, params: params)
+    open func put(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<Void> {
+        let r = putRequest(url, params: params, extraHeaders: extraHeaders)
         r.returnsJSON = false
         return r.fetch().registerThen { (_:JSON) -> Void in }.resolveOnMainThread()
     }
     
-    open func delete(_ url: String, params: Params = Params()) -> Promise<Void> {
-        let r = deleteRequest(url, params: params)
+    open func delete(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> Promise<Void> {
+        let r = deleteRequest(url, params: params, extraHeaders: extraHeaders)
         r.returnsJSON = false
         return r.fetch().registerThen { (_: JSON) -> Void in }.resolveOnMainThread()
     }

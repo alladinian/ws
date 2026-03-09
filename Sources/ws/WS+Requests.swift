@@ -12,20 +12,20 @@ public typealias Params = [String: Any]
 
 extension WS {
     
-    public func getRequest(_ url: String, params: Params = Params()) -> WSRequest {
-        return call(url, verb: .get, params: params)
+    public func getRequest(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> WSRequest {
+        return call(url, verb: .get, params: params, extraHeaders: extraHeaders)
     }
     
-    public func putRequest(_ url: String, params: Params = Params()) -> WSRequest {
-        return call(url, verb: .put, params: params)
+    public func putRequest(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> WSRequest {
+        return call(url, verb: .put, params: params, extraHeaders: extraHeaders)
     }
     
-    public func postRequest(_ url: String, params: Params = Params()) -> WSRequest {
-        return call(url, verb: .post, params: params)
+    public func postRequest(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> WSRequest {
+        return call(url, verb: .post, params: params, extraHeaders: extraHeaders)
     }
     
-    public func deleteRequest(_ url: String, params: Params = Params()) -> WSRequest {
-        return call(url, verb: .delete, params: params)
+    public func deleteRequest(_ url: String, params: Params = Params(), extraHeaders: [String : String]? = nil) -> WSRequest {
+        return call(url, verb: .delete, params: params, extraHeaders: extraHeaders)
     }
     
     public func postMultipartRequest(_ url: String,
