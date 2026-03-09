@@ -14,9 +14,10 @@ extension WS {
     
     public func get<T: ArrowParsable>(_ url: String,
                                       params: Params = Params(),
+                                      extraHeaders: [String : String]? = nil,
                                       keypath: String? = nil) -> Promise<[T]> {
         let keypath = keypath ?? defaultCollectionParsingKeyPath
-        return getRequest(url, params: params).fetch()
+        return getRequest(url, params: params, extraHeaders: extraHeaders).fetch()
             .registerThen { (json: JSON) -> [T] in
                 WSModelJSONParser<T>().toModels(json, keypath: keypath)
             }.resolveOnMainThread()
@@ -24,36 +25,47 @@ extension WS {
     
     public func get<T: ArrowParsable>(_ url: String,
                                       params: Params = Params(),
+                                      extraHeaders: [String : String]? = nil,
                                       keypath: String? = nil) -> Promise<T> {
-        return resourceCall(.get, url: url, params: params, keypath: keypath)
+        return resourceCall(.get, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     public func post<T: ArrowParsable>(_ url: String,
                                        params: Params = Params(),
+                                       extraHeaders: [String : String]? = nil,
                                        keypath: String? = nil) -> Promise<T> {
-        return resourceCall(.post, url: url, params: params, keypath: keypath)
+        return resourceCall(.post, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     public func put<T: ArrowParsable>(_ url: String,
                                       params: Params = Params(),
+                                      extraHeaders: [String : String]? = nil,
                                       keypath: String? = nil) -> Promise<T> {
-        return resourceCall(.put, url: url, params: params, keypath: keypath)
+        return resourceCall(.put, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     public func delete<T: ArrowParsable>(_ url: String,
                                          params: Params = Params(),
+                                         extraHeaders: [String : String]? = nil,
                                          keypath: String? = nil) -> Promise<T> {
-        return resourceCall(.delete, url: url, params: params, keypath: keypath)
+        return resourceCall(.delete, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     private func resourceCall<T: ArrowParsable>(_ verb: WSHTTPVerb,
                                                 url: String,
                                                 params: Params = Params(),
+                                                extraHeaders: [String : String]? = nil,
                                                 keypath: String? = nil) -> Promise<T> {
         let c = defaultCall()
         c.httpVerb = verb
         c.URL = url
         c.params = params
+        
+        if let extraHeaders {
+            for (key, value) in extraHeaders {
+                c.headers[key] = value
+            }
+        }
         
         // Apply corresponding JSON mapper
         return c.fetch().registerThen { (json: JSON) -> T in
@@ -67,9 +79,10 @@ extension WS {
     
     public func get<T: ArrowInitializable>(_ url: String,
                                            params: Params = Params(),
+                                           extraHeaders: [String : String]? = nil,
                                            keypath: String? = nil) -> Promise<[T]> {
         let keypath = keypath ?? defaultCollectionParsingKeyPath
-        return getRequest(url, params: params)
+        return getRequest(url, params: params, extraHeaders: extraHeaders)
             .fetch()
             .registerThen { (json: JSON) in
                 Promise<[T]> { (resolve, reject) in
@@ -85,35 +98,47 @@ extension WS {
     
     public func get<T: ArrowInitializable>(_ url: String,
                                            params: Params = Params(),
+                                           extraHeaders: [String : String]? = nil,
                                            keypath: String? = nil) -> Promise<T> {
-        return typeCall(.get, url: url, params: params, keypath: keypath)
+        return typeCall(.get, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     public func post<T: ArrowInitializable>(_ url: String,
                                             params: Params = Params(),
+                                            extraHeaders: [String : String]? = nil,
                                             keypath: String? = nil) -> Promise<T> {
-        return typeCall(.post, url: url, params: params, keypath: keypath)
+        return typeCall(.post, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     public func put<T: ArrowInitializable>(_ url: String,
                                            params: Params = Params(),
+                                           extraHeaders: [String : String]? = nil,
                                            keypath: String? = nil) -> Promise<T> {
-        return typeCall(.put, url: url, params: params, keypath: keypath)
+        return typeCall(.put, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     public func delete<T: ArrowInitializable>(_ url: String,
                                               params: Params = Params(),
+                                              extraHeaders: [String : String]? = nil,
                                               keypath: String? = nil) -> Promise<T> {
-        return typeCall(.delete, url: url, params: params, keypath: keypath)
+        return typeCall(.delete, url: url, params: params, extraHeaders: extraHeaders, keypath: keypath)
     }
     
     private func typeCall<T: ArrowInitializable>(_ verb: WSHTTPVerb,
-                                                 url: String, params: Params = Params(),
+                                                 url: String,
+                                                 params: Params = Params(),
+                                                 extraHeaders: [String : String]? = nil,
                                                  keypath: String? = nil) -> Promise<T> {
         let c = defaultCall()
         c.httpVerb = verb
         c.URL = url
         c.params = params
+        
+        if let extraHeaders {
+            for (key, value) in extraHeaders {
+                c.headers[key] = value
+            }
+        }
         
         // Apply corresponding JSON mapper
         return c.fetch()
