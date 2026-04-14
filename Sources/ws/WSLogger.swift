@@ -32,7 +32,8 @@ class WSLogger {
             return
         }
         print("\(request.httpVerb.rawValue.uppercased()) '\(request.URL)'")
-        print("  params : \(request.params)")
+        let paramsText = prettyPrintedObjectString(from: request.params) ?? "\(request.params)"
+        print("  params : \(paramsText)")
         
         for (k, v) in request.headers {
             print("  \(k) : \(v)")
@@ -81,7 +82,12 @@ class WSLogger {
         if logLevels == .debug {
             switch response.result {
             case .success(let value):
-                print(value)
+                if let data = response.data,
+                   let utf8Text = prettyPrintedJSONString(from: data) {
+                    print(utf8Text)
+                } else {
+                    print(value)
+                }
             case .failure(let error):
                 print(error)
             }
@@ -110,5 +116,25 @@ class WSLogger {
         if let urlResponse = urlResponse, let url = urlResponse.url {
             print("\(urlResponse.statusCode) '\(url.absoluteString)'")
         }
+    }
+
+    private func prettyPrintedJSONString(from data: Data) -> String? {
+        guard let object = try? JSONSerialization.jsonObject(with: data, options: []),
+              JSONSerialization.isValidJSONObject(object),
+              let normalizedData = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]) else {
+            return String(data: data, encoding: .utf8)
+        }
+
+        return String(data: normalizedData, encoding: .utf8)
+    }
+
+    private func prettyPrintedObjectString(from object: Any) -> String? {
+        guard JSONSerialization.isValidJSONObject(object),
+              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
+              let text = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+
+        return text
     }
 }
